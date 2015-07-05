@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="/static/css/check.css" />
         <script src="/static/js/vendor/modernizr-2.8.3.min.js"></script>
         <script src="/static/js/vendor/knockout-3.3.0.js"></script>
+        <script src="/static/js/vendor/sha256.js"></script>
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -37,7 +38,7 @@
                 <td>Task</td>
                 <td>Score</td>
             </tr></thead>
-            <tbody data-bind="foreach: tasks">
+            <tbody data-bind="foreach: Tasks">
                 <tr class="task" data-bind="css: { completed: Completed }">
                     <td class="task-completed"><input class="task-checkbox" type="checkbox" data-bind="checked: Completed" /></td> 
                     <td class="task-body">
@@ -49,6 +50,19 @@
                 </tr>
             </tbody>
         </table>
+
+        <div id="taskFilter">
+            <label for="filter-func">Eligible tasks</label>
+            <input id="filter-func" data-bind="value: FilterString" placeholder="Ex: from:me" />
+            <input id="filter-save" type="button" value="Save" />
+        </div>
+
+        <div id="ranking">
+            <label for="ranking-func">Modify ranking function</label>
+            <p>Treat this as the function body for generating a score for a particular task. Make sure to return a numerical value at the end.</p>
+            <textarea id="ranking-func" type="textarea" data-bind="value: RankingFunc" placeholder="Write your ranking function here..."></textarea>
+            <input id="ranking-save" type="button" value="Save" />
+        </div>
 
         <script src="/static/js/plugins.js"></script>
         <script src="/static/js/main.js"></script>

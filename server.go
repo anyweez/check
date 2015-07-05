@@ -23,7 +23,6 @@ import (
 
 // TODO: encrypt cookie data
 var storage = sessions.NewCookieStore([]byte("cookie"))
-var excludedLabels = []string{"SENT", "INBOX"}
 
 var (
 	AuthorizationCode = "authentication-code"
@@ -137,31 +136,25 @@ func logout_handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func fetch(w http.ResponseWriter, r *http.Request) {
-	tasks := make([]Item, 0)
-//	timezone, _ := time.LoadLocation("UTC")
+	query := r.FormValue("q")
 
-
-	for htype, headers := range r.Header {
-		if htype == "Cookie" {
-			for _, h := range headers {
-				fmt.Println("  " + h)
-			}
-		}
+	if len(query) > 0 {
+		log.Println("Fetch request received. Query=" + query)
+	} else {
+		log.Println("Fetch request received. Query=<none>")		
 	}
+
+	tasks := make([]Item, 0)
 
 	// Fetch the authorization code. We'll use it to get an access
 	// token and (potentially) a refresh token.
 	session, err := storage.Get(r, "userSession")
-	fmt.Println(session)
-	fmt.Println(session.IsNew)
 	if err != nil {
-		log.Println("Session decoding error: " + err.Error())
-	} else {
-		log.Println("Seems to decode correctly.")
+		log.Println("WARN: session decoding error: " + err.Error())
 	}
 
 	if token, ok := session.Values[AccessToken].(*oauth2.Token); !ok {
-		log.Println("no retrievable token for this user")
+		log.Println("ERR: no retrievable token for this user")
 		http.Error(w, "", 500)
 	} else {
 		config := oauth2.Config{
@@ -180,8 +173,8 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		}
 
-		// Get labels
-		// Create a mapping between ID's and names.
+		// Get labels and create a mapping between ID's and names. Note that a label
+		// on a message will be dropped unless it's mapping is available in this table.
 		labelTable := make(map[string]string)
 		labelReq := service.Users.Labels.List("me")
 		labelResponse, err := labelReq.Do()
@@ -190,16 +183,29 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 		}
 
 		for _, label := range labelResponse.Labels {
-			labelTable[label.Id] = label.Name
+			// Only keep user-defined labels. Gmail also creates some as well
+			// but users don't see them so it's going to look whacky / broken here.
+			if label.Type == "user" {
+				labelTable[label.Id] = label.Name
+			}
 		}
 
 		// Get messages
-		messageReq := service.Users.Messages.List("me").Q("from:me")
+		messageReq := new(gmail.UsersMessagesListCall)
+		if (len(query) > 0) {
+			messageReq = service.Users.Messages.List("me").Q(query)
+		} else {
+			messageReq = service.Users.Messages.List("me")
+		}
 		messageResponse, err := messageReq.Do()
+
 		if err != nil {
 			log.Println(err.Error())
+		} else {
+			// TODO: if the query succeeded, save this as the user's filter.
 		}
 
+		log.Println(fmt.Sprintf("Retrieving %d messages...", len(messageResponse.Messages)))
 		for _, m := range messageResponse.Messages {
 			msg, err := service.Users.Messages.Get("me", m.Id).Do()
 			if err != nil {
@@ -232,22 +238,10 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			}
 
 			for _, label := range msg.LabelIds {
-				named := labelTable[label]
-				keep := true
-
-				// Check to make sure the label isn't excluded
-
-				for _, ex := range excludedLabels {
-					if named == ex {
-						keep = false
-					}
-				}
-
-				if keep {
+				if named, ok := labelTable[label]; ok {
 					labels = append(labels, named)
 				}
 			}
-
 
 			tasks = append(tasks, Item{
 				Title: subject,
@@ -259,19 +253,6 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-/*
-	placeholder = append(placeholder, Item{
-		Title: 	"First item",
-		CreateDate: time.Date(2015, 2, 15, 14, 41, 0, 0, timezone),
-		Labels: []string{"todo", "urgent", "$$$"},
-	})
-
-	placeholder = append(placeholder, Item{
-		Title: "Second item",
-		CreateDate: time.Date(2015, 3, 11, 19, 11, 0, 0, timezone),
-		Labels: []string{"todo", "whenever"},
-	})
-*/
 	data, err := json.Marshal(tasks)
 
 	if err != nil {

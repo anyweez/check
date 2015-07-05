@@ -41,3 +41,38 @@ table {
 	background-color: #eee;
 	color: #999;
 }
+
+#ranking {
+	margin: 2% 10% 0% 10%;
+}
+
+label {
+	display: block;
+}
+
+input[type=button] {
+	margin-top: 1%;
+	padding: 5px;
+
+	width: 5%;
+}
+
+#ranking-func {
+	width: 100%;
+	height: 400px;
+
+	white-space: nowrap;
+	vertical-align: top;
+
+	padding: .5em;
+}
+
+#taskFilter {
+	margin: 2% 10% 0% 10%;
+}
+
+#filter-func {
+	width: 100%;
+	padding: .5em;
+}
+
