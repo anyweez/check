@@ -22,7 +22,6 @@ self.addEventListener("message", function(e) {
 	// with it since response.Valid is already set to false.
 	} catch (e) {
 		console.log(e);
-
 	}
 
 	self.postMessage(JSON.stringify(response));

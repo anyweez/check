@@ -1,0 +1,180 @@
+
+/**
+ * HTML element styles.
+ */
+body {
+	font-family: 'Open Sans', sans-serif;
+	background-color: #eeeeee;
+}
+
+table {
+	margin: 0 auto;
+	width: 100%;
+
+	margin-top: 50px;
+
+	.completed {
+		background-color: #eee;
+		color: #999;
+	}
+}
+
+label {
+	display: block;
+}
+
+input[type=button] {
+	margin-top: 1%;
+	padding: 5px;
+
+	width: 5%;
+}
+
+/**
+ *
+ */
+#app {
+	width: 80%;
+	margin: 0 auto;
+}
+
+/**
+ *
+ */
+#header {
+	background-color: #222;
+	color: #ddd;
+
+	padding: 1.5% 1.5% 1.5% 10%;
+
+	p {
+		margin: 0;
+		padding: 0;
+	}
+
+	#header-title {
+		font-size: 1.4em;
+		font-weight: bold;
+		letter-spacing: 1px;
+	}
+
+	#header-username {
+		font-size: 1.1em;
+	}
+}
+
+#task-list {
+	margin-top: 3%;
+
+
+		.incomplete {
+			color: black;
+		}
+
+		.complete {
+			color: #999;
+			background-color: green;
+		}
+	/**
+ 	 * An individual element (row) on the task list (which is a table).
+ 	 */
+	.task {
+		border: 1px solid #ccc;
+		background-color: #fcfcfc;
+		border-radius: 3px;
+
+		display: block;
+		width: 100%;
+		height: 100%;
+
+		margin-bottom: 8px;
+
+		-webkit-box-shadow: 6px 8px 35px 0px rgba(0,0,0,0.28);
+		-moz-box-shadow: 6px 8px 35px 0px rgba(0,0,0,0.28);
+		box-shadow: 6px 8px 35px 0px rgba(0,0,0,0.28);
+		
+		/**
+		 * Checkbox container.
+		 */
+		.task-status {
+			width: 5%;
+			/* An extremely hacky solution to vertically centering since
+			   I can't get it to center for the life of me. */
+			margin-top: 2.5%;
+
+			text-align: center;
+			
+			float: left;
+			display: inline-block;
+		}
+
+		/**
+		 * Body that contains all actual task content.
+		 */
+		.task-body {
+			float: left;
+			display: table-cell;
+			width: 90%;
+			padding: .5em 0 .5em 0;
+
+			p {
+				padding: 0;
+				margin: .3em;
+			}
+		
+			.task-title {
+				font-weight: bold;
+			}
+
+			.task-labels {
+				font-style: italic;
+				color: #999;
+			}
+		}
+
+		/** 
+		 * The score that comes out of the ranking function for each task.
+		 */
+		.task-score {
+			margin-top: 2.5%;
+			width: 5%;
+
+			float: left;
+			display: table-cell;
+		}
+	}
+}
+
+
+/**
+ * UI element where users enter a Javascript function to be executed on
+ * the client.
+ */
+#ranking {
+	margin-top: 2%;
+	width: 100%;
+
+	#ranking-func {
+		width: 100%;
+		height: 400px;
+
+		white-space: nowrap;
+		vertical-align: top;
+
+		padding: .5em;
+	}
+}
+
+/**
+ * UI element where users enter a plaintext filter to be applied to
+ * all messages in their mailbox to identify which are "tasks."
+ */
+#taskFilter {
+	margin-top: 2%;
+	width: 100%;
+
+	#filter-func {
+		width: 100%;
+		padding: .5em;
+	}
+}

@@ -48,7 +48,7 @@
                     sizeClass: settings.sizeClass
                 });
 
-                $('.alt-checkbox').on("click", function(e) { console.log("events!"); });    
+//                $('.alt-checkbox').on("click", function(e) { console.log("events!"); });    
                 $('.task-labels').click(function(e) { console.log("separate events")});
 
                 alt.on("click.alt-checkbox", function(e) {

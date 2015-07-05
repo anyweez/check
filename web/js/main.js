@@ -21,6 +21,7 @@ $(document).ready(function() {
 		}
 	})
 
+	// For receiving events back from the worker.
 	worker.addEventListener("message", UpdateScore, false);
 });
 
@@ -47,17 +48,20 @@ function HandleTasks(taskList) {
 	// into the observableArray.
 	for (var i = 0; i < taskList.length; i++) {
 		taskList[i].TaskId = hex_sha256(taskList[i].Title + taskList[i].Snippet);
-		taskList[i].Score = Score = ko.observable(0);
+		taskList[i].Score = ko.observable(0);
 
-		taskList.Labels = ko.computed(function() {
+		taskList[i].Labels = ko.computed(function() {
 			return "Labels: " + this.Labels.join(", ");
 		}, taskList[i]);
 		// Flag identifying whether this tag has been marked as complete. Certain
 		// logic, such as marking off items in the UI, will be based on it.
-		taskList[i].Completed = false;
+		taskList[i].Completed = ko.observable(false);
 
 		vm.Tasks.push(taskList[i]);
 	}
+
+	// Need to initialize alt checkboxes after the elements actually exist!
+//	$(".task-checkbox").altCheckbox({});
 }
 
 function ViewModel(taskList) {
