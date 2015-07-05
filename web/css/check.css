@@ -1,0 +1,43 @@
+
+table {
+	margin: 0 auto;
+
+	width: 80%;
+	margin-top: 50px;
+}
+
+.task {
+	border: 1px solid #ccc;
+}
+
+.task .task-completed {
+	width: 5%;
+	text-align: center;
+}
+
+.task .task-body {
+	width: 80%;
+}
+
+.task .task-body p {
+	padding: .2em;
+	margin: 0;
+}
+
+.task .task-body .task-title {
+	font-weight: bold;
+}
+
+.task .task-body .task-labels {
+	font-style: italic;
+	color: #999;
+}
+
+.task .task-score {
+	width: 15%;
+}
+
+.completed {
+	background-color: #eee;
+	color: #999;
+}
