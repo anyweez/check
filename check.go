@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"flag"
-//	"strings"
 )
 
 // Stored state requirements
@@ -16,11 +15,13 @@ var (
 	CACHE_TOKEN = flag.Bool("cachetoken", true, "cache the OAuth 2.0 token")
 )
 
-
 func main() {
 	flag.Parse()
 
+	// Create a new server object that's properly configured.
+	server := NewCoreServer()
 	// Configure and start the Check web server.
 	log.Println("Starting server...")
-	ConfigureAndStart()
+	server.Start()
+	log.Println("Closing...")
 }
