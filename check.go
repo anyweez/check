@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	"flag"
+	"log"
 )
 
 // Stored state requirements
@@ -11,7 +11,7 @@ import (
 // Flags
 var (
 	CLIENT_ID   = flag.String("clientid", "", "OAuth 2.0 Client ID.")
-	SECRET     = flag.String("secret", "", "OAuth 2.0 Client Secret.")
+	SECRET      = flag.String("secret", "", "OAuth 2.0 Client Secret.")
 	CACHE_TOKEN = flag.Bool("cachetoken", true, "cache the OAuth 2.0 token")
 )
 

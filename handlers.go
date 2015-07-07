@@ -1,18 +1,18 @@
 package main
 
 import (
-	"net/http"
-	"golang.org/x/net/context"
-	gmail "google.golang.org/api/gmail/v1"
-	oauth2 "github.com/goincremental/negroni-oauth2"
-	goauth2 "golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 	"encoding/json"
 	"fmt"
+	oauth2 "github.com/goincremental/negroni-oauth2"
+	"golang.org/x/net/context"
+	goauth2 "golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	gmail "google.golang.org/api/gmail/v1"
 	"io/ioutil"
-	"time"
 	"log"
+	"net/http"
 	"strings"
+	"time"
 )
 
 /**
@@ -22,7 +22,7 @@ func main_handler(w http.ResponseWriter, r *http.Request) {
 	// If logged in, forward along to the main app directly.
 	if UserLoggedIn(r) {
 		http.Redirect(w, r, "/app", 307)
-	// If not logged in, display the index page.
+		// If not logged in, display the index page.
 	} else {
 		body, err := ioutil.ReadFile("web/index.html")
 
@@ -54,10 +54,10 @@ func auth_handler(w http.ResponseWriter, r *http.Request) {
 	user, err := FetchUser(r, w)
 	if err != nil {
 		log.Println("Couldn't retrieve user: " + err.Error())
-	// On success, redirect to the main app
+		// On success, redirect to the main app
 	} else {
 		StoreUserInSession(r, user)
-		http.Redirect(w, r, "/app", 307)				
+		http.Redirect(w, r, "/app", 307)
 	}
 }
 
@@ -68,7 +68,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 	if len(query) > 0 {
 		log.Println("Fetch request received. Query=" + query)
 	} else {
-		log.Println("Fetch request received. Query=<none>")		
+		log.Println("Fetch request received. Query=<none>")
 	}
 
 	tokens := oauth2.GetToken(r)
@@ -76,7 +76,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 	// its an error.
 	if !UserLoggedIn(r) {
 		log.Println("ERR: no retrievable token for this user")
-		http.Error(w, "", 500)		
+		http.Error(w, "", 500)
 	} else {
 		service, err := getGmailService(tokens)
 		if err != nil {
@@ -100,9 +100,9 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-				// Get messages
+		// Get messages
 		messageReq := new(gmail.UsersMessagesListCall)
-		if (len(query) > 0) {
+		if len(query) > 0 {
 			messageReq = service.Users.Messages.List("me").Q(query)
 		} else {
 			messageReq = service.Users.Messages.List("me")
@@ -121,7 +121,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Println(err.Error())
 			}
-			
+
 			tasks = append(tasks, parseMessage(msg, labelTable))
 		}
 	}
@@ -131,7 +131,7 @@ func fetch(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Couldn't serialize item list: " + err.Error())
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, string(data))
 }
@@ -149,11 +149,11 @@ func app_handler(w http.ResponseWriter, r *http.Request) {
 
 func getGmailService(tokens oauth2.Tokens) (*gmail.Service, error) {
 	config := goauth2.Config{
-		ClientID: *CLIENT_ID,
+		ClientID:     *CLIENT_ID,
 		ClientSecret: *SECRET,
-		Endpoint: google.Endpoint,
-		Scopes: []string{gmail.MailGoogleComScope},
-		RedirectURL: "http://localhost:8080/auth",
+		Endpoint:     google.Endpoint,
+		Scopes:       []string{gmail.MailGoogleComScope},
+		RedirectURL:  "http://localhost:8080/auth",
 	}
 
 	ctx := context.Background()

@@ -5,14 +5,14 @@
 package main
 
 import (
-	"net/http"
 	"github.com/gorilla/mux"
-//	"github.com/gorilla/sessions"
-	oauth2 "github.com/goincremental/negroni-oauth2"
+	"net/http"
+	//	"github.com/gorilla/sessions"
+	"encoding/gob"
 	"github.com/codegangsta/negroni"
+	oauth2 "github.com/goincremental/negroni-oauth2"
 	"github.com/goincremental/negroni-sessions"
 	"github.com/goincremental/negroni-sessions/cookiestore"
-	"encoding/gob"
 )
 
 /**
@@ -20,8 +20,8 @@ import (
  * to make the server work as expected.
  */
 type CoreServer struct {
-	Router		*mux.Router
-	Middleware  *negroni.Negroni  
+	Router     *mux.Router
+	Middleware *negroni.Negroni
 }
 
 // TODO: encrypt cookie data
@@ -29,8 +29,8 @@ type CoreServer struct {
 
 var (
 	AuthorizationCode = "authentication-code"
-	AccessToken = "access-token"
-	RefreshToken = "refresh-token"
+	AccessToken       = "access-token"
+	RefreshToken      = "refresh-token"
 )
 
 func init() {
@@ -42,7 +42,7 @@ func init() {
  */
 func NewCoreServer() CoreServer {
 	server := CoreServer{
-		Router: mux.NewRouter(),
+		Router:     mux.NewRouter(),
 		Middleware: negroni.New(),
 	}
 
@@ -54,7 +54,7 @@ func NewCoreServer() CoreServer {
 	storage := cookiestore.New([]byte("temporary"))
 	server.Middleware.Use(sessions.Sessions("userprofile", storage))
 	config := (oauth2.Config)(GetClientConfig())
-	server.Middleware.Use(oauth2.Google(&config ))
+	server.Middleware.Use(oauth2.Google(&config))
 
 	/**
 	 * Mux describing routes that require the user to be logged in via
@@ -64,7 +64,7 @@ func NewCoreServer() CoreServer {
 	// Core app handlers; these require the user to be logged in.
 	secureMux.HandleFunc("/app/fetch", fetch)
 	secureMux.HandleFunc("/app", app_handler)
-	
+
 	secure := negroni.New()
 	secure.Use(oauth2.LoginRequired())
 	secure.UseHandler(secureMux)
@@ -75,7 +75,7 @@ func NewCoreServer() CoreServer {
 	server.Router.HandleFunc("/auth", auth_handler)
 	// Static content handler
 	server.Router.PathPrefix("/static").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/"))))
-	// Simple redirect handler 
+	// Simple redirect handler
 	server.Router.HandleFunc("/", main_handler)
 
 	/**

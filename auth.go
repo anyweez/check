@@ -1,10 +1,9 @@
 package main
 
 import (
-	"net/http"
 	"golang.org/x/oauth2"
 	gmail "google.golang.org/api/gmail/v1"
-
+	"net/http"
 )
 
 func FetchUser(r *http.Request, w http.ResponseWriter) (UserConfig, error) {
@@ -17,9 +16,9 @@ func FetchUser(r *http.Request, w http.ResponseWriter) (UserConfig, error) {
 
 func GetClientConfig() oauth2.Config {
 	return oauth2.Config{
-		ClientID: *CLIENT_ID,
+		ClientID:     *CLIENT_ID,
 		ClientSecret: *SECRET,
-		RedirectURL: "http://localhost:8080/oauth2callback",
-		Scopes: []string{gmail.MailGoogleComScope},
+		RedirectURL:  "http://localhost:8080/oauth2callback",
+		Scopes:       []string{gmail.MailGoogleComScope},
 	}
 }

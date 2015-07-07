@@ -1,27 +1,27 @@
 package main
 
 import (
+	oauth2 "github.com/goincremental/negroni-oauth2"
+	"github.com/goincremental/negroni-sessions"
 	"net/http"
 	"time"
-	"github.com/goincremental/negroni-sessions"
-	oauth2 "github.com/goincremental/negroni-oauth2"
 )
 
 type UserConfig struct {
 	// Hashed email address
-	UserId				[]byte
-	EmailAddress		string
-	CreatedOn			time.Time
+	UserId       []byte
+	EmailAddress string
+	CreatedOn    time.Time
 
 	// Filter strings are passed to Google to define what messages should
 	// come back as tasks. This parameter stores the last user-provided
 	// FilterString that returned a successful response code from Google.
-	FilterString		string
+	FilterString string
 
 	// User-provided function input that last executed successfully. Note
 	// that this is user-provided and should never be passed to any other
 	// users under any circumstances.
-	RankingFunc			string
+	RankingFunc string
 }
 
 func GetUserFromSession(r *http.Request) (UserConfig, error) {
